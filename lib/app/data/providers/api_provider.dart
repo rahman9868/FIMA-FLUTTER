@@ -3,7 +3,7 @@ import 'api_client.dart';
 
 class ApiProvider {
   final ApiClient _apiClient = ApiClient(
-    "https://fimatest-qa-new.fifgroup.co.id/fima-api_obs/",
+    "https://wf.dev.neo-fusion.com/fira-api/",
   );
 
   final String encodedCredentials =
