@@ -26,7 +26,7 @@ class LoginController extends GetxController {
     } on ApiException catch (e) {
       Get.snackbar('Login Failed', e.message);
     } catch (e) {
-      Get.snackbar('Error', 'An unexpected error occurred. Please try again.');
+      Get.snackbar('Error', e.toString());
     } finally {
       isLoading.value = false;
     }

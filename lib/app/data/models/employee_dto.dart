@@ -9,17 +9,17 @@ String employeeDtoToJson(EmployeeDto data) => json.encode(data.toJson());
 
 class EmployeeDto {
   final int id;
-  final bool isVip;
-  final bool vipIn;
-  final bool vipOut;
+  final bool? isVip;
+  final bool? vipIn;
+  final bool? vipOut;
   final AccountDto account;
-  final bool employeeActive;
-  final bool employeeExt;
-  final String modified;
-  final String lastSync;
-  final String syncSource;
-  final String status;
-  final bool useKeycloak;
+  final bool? employeeActive;
+  final bool? employeeExt;
+  final String? modified;
+  final String? lastSync;
+  final String? syncSource;
+  final String? status;
+  final bool? useKeycloak;
   final String? lastUpdate;
 
   EmployeeDto({

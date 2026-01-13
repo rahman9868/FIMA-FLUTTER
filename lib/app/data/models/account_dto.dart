@@ -7,16 +7,16 @@ String accountDtoToJson(AccountDto data) => json.encode(data.toJson());
 
 class AccountDto {
   final int id;
-  final String name;
-  final String phone;
-  final String picture;
-  final String timezone;
-  final String username;
-  final String email;
+  final String? name;
+  final String? phone;
+  final String? picture;
+  final String? timezone;
+  final String? username;
+  final String? email;
   final List<dynamic> accesses; // Assuming AccessDto is complex, handle as needed
   final List<dynamic> roles; // Assuming RoleDto is complex, handle as needed
-  final String created;
-  final String modified;
+  final String? created;
+  final String? modified;
 
   AccountDto({
     required this.id,
