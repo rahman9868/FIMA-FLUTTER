@@ -1,4 +1,5 @@
 import '../models/auth_tokens_model.dart';
+import '../models/data_attendance_summary_dto.dart';
 import '../models/employee_dto.dart';
 import 'api_client.dart';
 import 'cache_manager.dart';
@@ -37,5 +38,20 @@ class ApiProvider {
     final profile = EmployeeDto.fromJson(response);
     await _cacheManager.saveUserProfile(profile);
     return profile;
+  }
+
+  Future<DataAttendanceSummaryDto> getEmployeeSummary(
+    int employeeId,
+    int year,
+    int month,
+  ) async {
+    final tokens = await _cacheManager.getAuthTokens();
+    final response = await _apiClient.get(
+      "att/attendanceSummary/$employeeId/$year/$month",
+      headers: {'Authorization': 'Bearer ${tokens?.accessToken}'},
+    );
+    final summary = DataAttendanceSummaryDto.fromJson(response);
+    await _cacheManager.saveAttendanceSummary(summary);
+    return summary;
   }
 }

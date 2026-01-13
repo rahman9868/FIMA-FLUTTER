@@ -18,10 +18,7 @@ class LoginController extends GetxController {
   void login() async {
     isLoading.value = true;
     try {
-      await repository.login(
-        usernameController.text,
-        passwordController.text,
-      );
+      await repository.login(usernameController.text, passwordController.text);
       Get.offAllNamed(Routes.DASHBOARD);
     } on ApiException catch (e) {
       Get.snackbar('Login Failed', e.message);

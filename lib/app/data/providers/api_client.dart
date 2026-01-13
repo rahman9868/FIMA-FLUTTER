@@ -8,19 +8,17 @@ class ApiClient {
 
   ApiClient(this.baseUrl);
 
-  Future<dynamic> get(String endpoint, {
-    Map<String, String>? headers,
-  }) async {
+  Future<dynamic> get(String endpoint, {Map<String, String>? headers}) async {
     final url = Uri.parse(baseUrl + endpoint);
     developer.log('Request URL: $url', name: 'my_app.network');
     developer.log('Request Headers: $headers', name: 'my_app.network');
 
-    final response = await http.get(
-      url,
-      headers: headers,
-    );
+    final response = await http.get(url, headers: headers);
 
-    developer.log('Response Status Code: ${response.statusCode}', name: 'my_app.network');
+    developer.log(
+      'Response Status Code: ${response.statusCode}',
+      name: 'my_app.network',
+    );
     developer.log('Response Body: ${response.body}', name: 'my_app.network');
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -28,14 +26,21 @@ class ApiClient {
     } else {
       final errorBody = json.decode(response.body);
       if (errorBody.containsKey('error_description')) {
-        throw ApiException(errorBody['error_description'], statusCode: response.statusCode);
+        throw ApiException(
+          errorBody['error_description'],
+          statusCode: response.statusCode,
+        );
       } else {
-        throw ApiException('An unexpected error occurred', statusCode: response.statusCode);
+        throw ApiException(
+          'An unexpected error occurred',
+          statusCode: response.statusCode,
+        );
       }
     }
   }
 
-  Future<dynamic> post(String endpoint, {
+  Future<dynamic> post(
+    String endpoint, {
     Map<String, String>? headers,
     dynamic body,
   }) async {
@@ -44,13 +49,12 @@ class ApiClient {
     developer.log('Request Headers: $headers', name: 'my_app.network');
     developer.log('Request Body: $body', name: 'my_app.network');
 
-    final response = await http.post(
-      url,
-      headers: headers,
-      body: body,
-    );
+    final response = await http.post(url, headers: headers, body: body);
 
-    developer.log('Response Status Code: ${response.statusCode}', name: 'my_app.network');
+    developer.log(
+      'Response Status Code: ${response.statusCode}',
+      name: 'my_app.network',
+    );
     developer.log('Response Body: ${response.body}', name: 'my_app.network');
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -58,9 +62,15 @@ class ApiClient {
     } else {
       final errorBody = json.decode(response.body);
       if (errorBody.containsKey('error_description')) {
-        throw ApiException(errorBody['error_description'], statusCode: response.statusCode);
+        throw ApiException(
+          errorBody['error_description'],
+          statusCode: response.statusCode,
+        );
       } else {
-        throw ApiException('An unexpected error occurred', statusCode: response.statusCode);
+        throw ApiException(
+          'An unexpected error occurred',
+          statusCode: response.statusCode,
+        );
       }
     }
   }
