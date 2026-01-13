@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:myapp/app/data/models/attendance_event_type.dart';
 
 import '../controllers/dashboard_controller.dart';
@@ -10,7 +11,10 @@ class DashboardView extends GetView<DashboardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        centerTitle: true,
+      ),
       body: RefreshIndicator(
         onRefresh: controller.refreshSummary,
         child: Obx(
@@ -19,64 +23,81 @@ class DashboardView extends GetView<DashboardController> {
               : _buildBody(),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
   Widget _buildBody() {
-    return _buildEventGrid();
-  }
-
-  Widget _buildEventGrid() {
-    final eventCounts = controller.eventCounts;
-    final eventTypes = AttendanceEventType.values;
-
-    return GridView.builder(
+    return ListView(
       padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 1.5,
-      ),
-      itemCount: eventTypes.length,
-      itemBuilder: (context, index) {
-        final eventType = eventTypes[index];
-        final count = eventCounts[eventType] ?? 0;
-        return _buildEventCard(eventType: eventType, count: count);
-      },
+      children: [
+        _buildSummaryHeader(),
+        const SizedBox(height: 16),
+        _buildEventList(),
+      ],
     );
   }
 
-  Widget _buildEventCard({
-    required AttendanceEventType eventType,
-    required int count,
-  }) {
+  Widget _buildSummaryHeader() {
+    final lastUpdate = controller.lastUpdate.value;
+    final formattedDate = lastUpdate != null
+        ? DateFormat('yyyy-MM-dd HH:mm:ss').format(lastUpdate)
+        : 'Unknown';
+
+    return Column(
+      children: [
+        Text('Last Update: $formattedDate'),
+        const Text('Please Pull to Refresh'),
+      ],
+    );
+  }
+
+  Widget _buildEventList() {
+    final eventCounts = controller.eventCounts;
+    final eventTypes = [
+      AttendanceEventType.WORKING,
+      AttendanceEventType.ON_TIME,
+      AttendanceEventType.LATE,
+      AttendanceEventType.ABSENT,
+      AttendanceEventType.BUSSINES,
+      AttendanceEventType.LEAVE,
+      AttendanceEventType.PENDING,
+    ];
+
     return Card(
-      elevation: 4,
+      elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _getIconForEventType(eventType),
-            const SizedBox(height: 8),
-            Text(
-              eventType.value,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              count.toString(),
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: _getColorForEventType(eventType),
-              ),
-            ),
-          ],
+          children: eventTypes.map((eventType) {
+            final count = eventCounts[eventType] ?? 0;
+            return _buildEventRow(eventType: eventType, count: count);
+          }).toList(),
         ),
+      ),
+    );
+  }
+
+  Widget _buildEventRow({
+    required AttendanceEventType eventType,
+    required int count,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          _getIconForEventType(eventType),
+          const SizedBox(width: 16),
+          Text(eventType.value),
+          const Spacer(),
+          const Text(':'),
+          const SizedBox(width: 16),
+          Text(count.toString()),
+        ],
       ),
     );
   }
@@ -84,42 +105,21 @@ class DashboardView extends GetView<DashboardController> {
   Icon _getIconForEventType(AttendanceEventType eventType) {
     switch (eventType) {
       case AttendanceEventType.LATE:
-        return const Icon(Icons.access_time, color: Colors.orange, size: 30);
+        return const Icon(Icons.flag, color: Colors.yellow);
       case AttendanceEventType.ON_TIME:
-        return const Icon(Icons.check_circle, color: Colors.green, size: 30);
+        return const Icon(Icons.flag, color: Colors.green);
       case AttendanceEventType.ABSENT:
-        return const Icon(Icons.cancel, color: Colors.red, size: 30);
+        return const Icon(Icons.flag, color: Colors.red);
       case AttendanceEventType.PENDING:
-        return const Icon(Icons.pending, color: Colors.grey, size: 30);
+        return const Icon(Icons.flag, color: Colors.orange);
       case AttendanceEventType.WORKING:
-        return const Icon(Icons.work, color: Colors.blue, size: 30);
+        return const Icon(Icons.bookmark_border, color: Colors.grey);
       case AttendanceEventType.BUSSINES:
-        return const Icon(Icons.business, color: Colors.purple, size: 30);
+        return const Icon(Icons.flag, color: Colors.blue);
       case AttendanceEventType.LEAVE:
-        return const Icon(Icons.time_to_leave, color: Colors.teal, size: 30);
+        return const Icon(Icons.flag, color: Colors.purple);
       case AttendanceEventType.HOLIDAY:
-        return const Icon(Icons.beach_access, color: Colors.pink, size: 30);
-    }
-  }
-
-  Color _getColorForEventType(AttendanceEventType eventType) {
-    switch (eventType) {
-      case AttendanceEventType.LATE:
-        return Colors.orange;
-      case AttendanceEventType.ON_TIME:
-        return Colors.green;
-      case AttendanceEventType.ABSENT:
-        return Colors.red;
-      case AttendanceEventType.PENDING:
-        return Colors.grey;
-      case AttendanceEventType.WORKING:
-        return Colors.blue;
-      case AttendanceEventType.BUSSINES:
-        return Colors.purple;
-      case AttendanceEventType.LEAVE:
-        return Colors.teal;
-      case AttendanceEventType.HOLIDAY:
-        return Colors.pink;
+        return const Icon(Icons.flag, color: Colors.pink);
     }
   }
 }

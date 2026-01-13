@@ -1,12 +1,12 @@
 enum AttendanceEventType {
-  LATE("LATE"),
-  ON_TIME("ON_TIME"),
-  ABSENT("ABSENT"),
-  PENDING("PENDING"),
-  WORKING("WORKING"),
-  BUSSINES("BUSINESS"),
-  LEAVE("LEAVE"),
-  HOLIDAY("HOLIDAY");
+  LATE('Late'),
+  ON_TIME('On-Time'),
+  ABSENT('Absent'),
+  PENDING('Pending'),
+  WORKING('Working Days'),
+  BUSSINES('Business Trip'),
+  LEAVE('Leave'),
+  HOLIDAY('Holiday');
 
   const AttendanceEventType(this.value);
   final String value;

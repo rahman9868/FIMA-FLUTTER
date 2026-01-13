@@ -12,23 +12,21 @@ class DashboardRepository {
 
   DashboardRepository(this._database);
 
-  Future<DataAttendanceSummaryDto?> getAttendanceSummary() async {
+  Future<(DataAttendanceSummaryDto?, DateTime?)> getAttendanceSummary() async {
     final cachedSummary = await _database.attendanceSummaryCacheDao
         .getLatestSummary();
 
-    if (cachedSummary != null &&
-        DateTime.now()
-                .difference(
-                  DateTime.fromMillisecondsSinceEpoch(cachedSummary.timestamp),
-                )
-                .inMinutes <
-            5) {
-      return dataAttendanceSummaryDtoFromJson(cachedSummary.summaryJson);
+    if (cachedSummary != null) {
+      final cachedTime = DateTime.fromMillisecondsSinceEpoch(cachedSummary.timestamp);
+      if (DateTime.now().difference(cachedTime).inMinutes < 5) {
+        final summaryDto = dataAttendanceSummaryDtoFromJson(cachedSummary.summaryJson);
+        return (summaryDto, cachedTime);
+      }
     }
     return await _fetchAndCacheSummary();
   }
 
-  Future<DataAttendanceSummaryDto> _fetchAndCacheSummary() async {
+  Future<(DataAttendanceSummaryDto, DateTime)> _fetchAndCacheSummary() async {
     final user = await _cacheManager.getUserProfile();
     final now = DateTime.now();
     final summary = await _apiProvider.getEmployeeSummary(
@@ -37,17 +35,18 @@ class DashboardRepository {
       now.month,
     );
     final summaryJson = dataAttendanceSummaryDtoToJson(summary);
+    final updateTime = DateTime.now();
     final cache = AttendanceSummaryCache(
-      id: 1, // Since we only cache one summary, the id can be constant
+      id: 1,
       summaryJson: summaryJson,
-      timestamp: DateTime.now().millisecondsSinceEpoch,
+      timestamp: updateTime.millisecondsSinceEpoch,
     );
     await _database.attendanceSummaryCacheDao.insertSummary(cache);
     await _cacheManager.saveLastUpdate();
-    return summary;
+    return (summary, updateTime);
   }
 
-  Future<DataAttendanceSummaryDto> refreshAttendanceSummary() async {
+  Future<(DataAttendanceSummaryDto, DateTime)> refreshAttendanceSummary() async {
     return await _fetchAndCacheSummary();
   }
 }

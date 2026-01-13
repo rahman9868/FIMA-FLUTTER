@@ -1,29 +1,17 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/app/data/local/app_database.dart';
 import 'package:myapp/app/routes/app_pages.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 void main() async {
+  // This is the crucial line that ensures all Flutter bindings are ready.
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize FFI for non-web platforms
-  if (!kIsWeb) {
-    sqfliteFfiInit();
-  }
-
-  // Set the database factory based on the platform
-  databaseFactory = databaseFactoryFfi;
-  if (kIsWeb) {
-    databaseFactory = databaseFactoryFfiWeb;
-  }
-
+  // Now, we can safely build the database.
   final database = await $FloorAppDatabase
       .databaseBuilder('app_database.db')
       .build();
-  Get.put(database);
+  Get.put(database); // Register the database instance with GetX.
 
   runApp(
     GetMaterialApp(

@@ -12,6 +12,7 @@ class DashboardController extends GetxController {
   final Rx<DataAttendanceSummaryDto?> summary = Rx(null);
   final RxBool isLoading = false.obs;
   final RxMap<AttendanceEventType, int> eventCounts = RxMap();
+  final Rx<DateTime?> lastUpdate = Rx(null);
 
   @override
   void onInit() {
@@ -22,8 +23,9 @@ class DashboardController extends GetxController {
   Future<void> fetchSummary() async {
     isLoading.value = true;
     try {
-      final result = await repository.getAttendanceSummary();
+      final (result, timestamp) = await repository.getAttendanceSummary();
       summary.value = result;
+      lastUpdate.value = timestamp;
       _calculateEventCounts();
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch summary');
@@ -34,8 +36,9 @@ class DashboardController extends GetxController {
 
   Future<void> refreshSummary() async {
     try {
-      final result = await repository.refreshAttendanceSummary();
+      final (result, timestamp) = await repository.refreshAttendanceSummary();
       summary.value = result;
+      lastUpdate.value = timestamp;
       _calculateEventCounts();
     } catch (e) {
       Get.snackbar('Error', 'Failed to refresh summary');
@@ -65,7 +68,6 @@ class DashboardController extends GetxController {
         }
       }
     }
-
     eventCounts.value = counts;
   }
 }
