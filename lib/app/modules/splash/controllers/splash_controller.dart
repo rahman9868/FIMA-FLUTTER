@@ -12,8 +12,8 @@ class SplashController extends GetxController {
   }
 
   void _checkLoginStatus() async {
-    // A short delay to allow the splash screen to be visible.
-    await Future.delayed(const Duration(seconds: 1));
+    // A short delay to allow the native splash screen to be visible.
+    await Future.delayed(const Duration(seconds: 2));
 
     final user = await _cacheManager.getUserProfile();
 
