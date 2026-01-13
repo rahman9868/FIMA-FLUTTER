@@ -3,13 +3,20 @@ import 'package:myapp/app/modules/dashboard/bindings/dashboard_binding.dart';
 import 'package:myapp/app/modules/dashboard/views/dashboard_view.dart';
 import 'package:myapp/app/modules/login/bindings/login_binding.dart';
 import 'package:myapp/app/modules/login/views/login_view.dart';
+import 'package:myapp/app/modules/splash/bindings/splash_binding.dart';
+import 'package:myapp/app/modules/splash/views/splash_view.dart';
 
 part 'app_routes.dart';
 
 class AppPages {
-  static const INITIAL = Routes.LOGIN;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
+    ),
     GetPage(
       name: _Paths.LOGIN,
       page: () => LoginView(),
