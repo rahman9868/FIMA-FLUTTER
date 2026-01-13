@@ -51,7 +51,6 @@ class ApiProvider {
       headers: {'Authorization': 'Bearer ${tokens?.accessToken}'},
     );
     final summary = DataAttendanceSummaryDto.fromJson(response);
-    await _cacheManager.saveAttendanceSummary(summary);
     return summary;
   }
 }

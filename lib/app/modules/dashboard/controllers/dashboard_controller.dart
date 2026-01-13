@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:myapp/app/data/models/attendance_event_type.dart';
 
 import '../../../data/models/data_attendance_summary_dto.dart';
 import '../../../data/repositories/dashboard_repository.dart';
@@ -10,6 +11,7 @@ class DashboardController extends GetxController {
 
   final Rx<DataAttendanceSummaryDto?> summary = Rx(null);
   final RxBool isLoading = false.obs;
+  final RxMap<AttendanceEventType, int> eventCounts = RxMap();
 
   @override
   void onInit() {
@@ -22,18 +24,48 @@ class DashboardController extends GetxController {
     try {
       final result = await repository.getAttendanceSummary();
       summary.value = result;
+      _calculateEventCounts();
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch summary');
+    } finally {
+      isLoading.value = false;
     }
-    isLoading.value = false;
   }
 
   Future<void> refreshSummary() async {
     try {
       final result = await repository.refreshAttendanceSummary();
       summary.value = result;
+      _calculateEventCounts();
     } catch (e) {
       Get.snackbar('Error', 'Failed to refresh summary');
     }
+  }
+
+  void _calculateEventCounts() {
+    // Initialize all counts to 0
+    final counts = <AttendanceEventType, int>{
+      for (var type in AttendanceEventType.values) type: 0,
+    };
+
+    final summaryData = summary.value?.data;
+    if (summaryData != null && summaryData.isNotEmpty) {
+      final events = summaryData.first.event;
+      if (events != null) {
+        for (var event in events) {
+          try {
+            final eventType = AttendanceEventType.values.firstWhere(
+              (e) => e.value == event.eventType,
+            );
+            counts[eventType] = (counts[eventType] ?? 0) + 1;
+          } catch (e) {
+            // Handle cases where the event type from the API is not in our enum
+            print("Unknown event type: ${event.eventType}");
+          }
+        }
+      }
+    }
+
+    eventCounts.value = counts;
   }
 }
