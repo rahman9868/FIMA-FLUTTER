@@ -46,7 +46,6 @@ class DashboardController extends GetxController {
   }
 
   void _calculateEventCounts() {
-    // Initialize all counts to 0
     final counts = <AttendanceEventType, int>{
       for (var type in AttendanceEventType.values) type: 0,
     };
@@ -55,19 +54,54 @@ class DashboardController extends GetxController {
     if (summaryData != null && summaryData.isNotEmpty) {
       final events = summaryData.first.event;
       if (events != null) {
-        for (var event in events) {
-          try {
-            final eventType = AttendanceEventType.values.firstWhere(
-              (e) => e.value == event.eventType,
-            );
-            counts[eventType] = (counts[eventType] ?? 0) + 1;
-          } catch (e) {
-            // Handle cases where the event type from the API is not in our enum
-            print("Unknown event type: ${event.eventType}");
-          }
-        }
+        final dayNow = DateTime.now().day;
+
+        final onTime = events
+            .where((e) => e.eventType == AttendanceEventType.ON_TIME.value)
+            .length;
+        final late = events
+            .where((e) => e.eventType == AttendanceEventType.LATE.value)
+            .length;
+        final absent = events
+            .where((e) => e.eventType == AttendanceEventType.ABSENT.value)
+            .length;
+        final businessTrip = events
+            .where((e) => e.eventType == AttendanceEventType.BUSSINES.value)
+            .length;
+        final leave = events
+            .where((e) => e.eventType == AttendanceEventType.LEAVE.value)
+            .length;
+        final pending = events
+            .where((e) => e.eventType == AttendanceEventType.PENDING.value)
+            .length;
+        final holiday = events
+            .where((e) => e.eventType == AttendanceEventType.HOLIDAY.value)
+            .length;
+
+        final leaveDays = events
+            .where((e) =>
+                e.eventType == AttendanceEventType.LEAVE.value && e.day <= dayNow)
+            .length;
+        final businessDays = events
+            .where((e) =>
+                e.eventType == AttendanceEventType.BUSSINES.value &&
+                e.day <= dayNow)
+            .length;
+
+        final workingDays =
+            businessDays + onTime + late + pending + absent + leaveDays;
+
+        counts[AttendanceEventType.ON_TIME] = onTime;
+        counts[AttendanceEventType.LATE] = late;
+        counts[AttendanceEventType.ABSENT] = absent;
+        counts[AttendanceEventType.BUSSINES] = businessTrip;
+        counts[AttendanceEventType.LEAVE] = leave;
+        counts[AttendanceEventType.PENDING] = pending;
+        counts[AttendanceEventType.HOLIDAY] = holiday;
+        counts[AttendanceEventType.WORKING] = workingDays;
       }
     }
+
     eventCounts.value = counts;
   }
 }
