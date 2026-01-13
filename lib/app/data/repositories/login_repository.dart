@@ -1,10 +1,10 @@
 import '../providers/api_provider.dart';
-import '../models/auth_tokens_model.dart';
 
 class LoginRepository {
   final ApiProvider _apiProvider = ApiProvider();
 
-  Future<AuthenticationTokens?> login(String username, String password) {
-    return _apiProvider.login(username, password);
+  Future<void> login(String username, String password) async {
+    await _apiProvider.login(username, password);
+    await _apiProvider.getUserProfile();
   }
 }

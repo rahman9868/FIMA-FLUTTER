@@ -1,26 +1,30 @@
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
-AuthenticationTokens authenticationTokensFromJson(String str) => AuthenticationTokens.fromJson(json.decode(str));
+AuthTokens authTokensFromJson(String str) => AuthTokens.fromJson(json.decode(str));
 
-String authenticationTokensToJson(AuthenticationTokens data) => json.encode(data.toJson());
+String authTokensToJson(AuthTokens data) => json.encode(data.toJson());
 
-class AuthenticationTokens {
-    final String accessToken;
-    final String refreshToken;
+class AuthTokens {
+  final String accessToken;
+  final String refreshToken;
 
-    AuthenticationTokens({
-        required this.accessToken,
-        required this.refreshToken,
-    });
+  AuthTokens({
+    required this.accessToken,
+    required this.refreshToken,
+  });
 
-    factory AuthenticationTokens.fromJson(Map<String, dynamic> json) => AuthenticationTokens(
+  factory AuthTokens.fromRawJson(String str) =>
+      AuthTokens.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory AuthTokens.fromJson(Map<String, dynamic> json) => AuthTokens(
         accessToken: json["access_token"],
         refreshToken: json["refresh_token"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "access_token": accessToken,
         "refresh_token": refreshToken,
-    };
+      };
 }

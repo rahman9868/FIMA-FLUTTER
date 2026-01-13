@@ -9,6 +9,11 @@ class LoginController extends GetxController {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final RxBool isLoading = false.obs;
+  final RxBool isObscure = true.obs;
+
+  void toggleObscure() {
+    isObscure.value = !isObscure.value;
+  }
 
   void login() async {
     isLoading.value = true;
