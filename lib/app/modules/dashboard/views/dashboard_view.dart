@@ -10,22 +10,14 @@ class DashboardView extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        centerTitle: true,
-      ),
-      body: RefreshIndicator(
-        onRefresh: controller.refreshSummary,
-        child: Obx(
-          () => controller.isLoading.value
-              ? const Center(child: CircularProgressIndicator())
-              : _buildBody(),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
+    // The Scaffold, AppBar, and Drawer are now in MainView.
+    // This widget only provides the body content for the dashboard.
+    return RefreshIndicator(
+      onRefresh: controller.refreshSummary,
+      child: Obx(
+        () => controller.isLoading.value
+            ? const Center(child: CircularProgressIndicator())
+            : _buildBody(),
       ),
     );
   }

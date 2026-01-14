@@ -79,13 +79,18 @@ class DashboardController extends GetxController {
             .length;
 
         final leaveDays = events
-            .where((e) =>
-                e.eventType == AttendanceEventType.LEAVE.value && e.day <= dayNow)
+            .where(
+              (e) =>
+                  e.eventType == AttendanceEventType.LEAVE.value &&
+                  e.day <= dayNow,
+            )
             .length;
         final businessDays = events
-            .where((e) =>
-                e.eventType == AttendanceEventType.BUSSINES.value &&
-                e.day <= dayNow)
+            .where(
+              (e) =>
+                  e.eventType == AttendanceEventType.BUSSINES.value &&
+                  e.day <= dayNow,
+            )
             .length;
 
         final workingDays =
@@ -102,6 +107,7 @@ class DashboardController extends GetxController {
       }
     }
 
+    
     eventCounts.value = counts;
   }
 }

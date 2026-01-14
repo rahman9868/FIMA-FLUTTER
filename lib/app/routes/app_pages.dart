@@ -4,6 +4,8 @@ import 'package:myapp/app/modules/dashboard/bindings/dashboard_binding.dart';
 import 'package:myapp/app/modules/dashboard/views/dashboard_view.dart';
 import 'package:myapp/app/modules/login/bindings/login_binding.dart';
 import 'package:myapp/app/modules/login/views/login_view.dart';
+import 'package:myapp/app/modules/main/bindings/main_binding.dart';
+import 'package:myapp/app/modules/main/views/main_view.dart';
 import 'package:myapp/app/modules/splash/controllers/splash_controller.dart';
 
 part 'app_routes.dart';
@@ -31,8 +33,8 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.DASHBOARD,
-      page: () => DashboardView(),
-      binding: DashboardBinding(),
+      page: () => MainView(),
+      binding: MainBinding(),
     ),
   ];
 }
