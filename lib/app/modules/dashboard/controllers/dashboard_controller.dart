@@ -57,38 +57,54 @@ class DashboardController extends GetxController {
         final dayNow = DateTime.now().day;
 
         final onTime = events
-            .where((e) => e.eventType == AttendanceEventType.ON_TIME.value)
+            .where((e) =>
+                e.eventType.toLowerCase() ==
+                AttendanceEventType.ON_TIME.value.toLowerCase())
             .length;
         final late = events
-            .where((e) => e.eventType == AttendanceEventType.LATE.value)
+            .where((e) =>
+                e.eventType.toLowerCase() ==
+                AttendanceEventType.LATE.value.toLowerCase())
             .length;
         final absent = events
-            .where((e) => e.eventType == AttendanceEventType.ABSENT.value)
+            .where((e) =>
+                e.eventType.toLowerCase() ==
+                AttendanceEventType.ABSENT.value.toLowerCase())
             .length;
         final businessTrip = events
-            .where((e) => e.eventType == AttendanceEventType.BUSSINES.value)
+            .where((e) =>
+                e.eventType.toLowerCase() ==
+                AttendanceEventType.BUSSINES.value.toLowerCase())
             .length;
         final leave = events
-            .where((e) => e.eventType == AttendanceEventType.LEAVE.value)
+            .where((e) =>
+                e.eventType.toLowerCase() ==
+                AttendanceEventType.LEAVE.value.toLowerCase())
             .length;
         final pending = events
-            .where((e) => e.eventType == AttendanceEventType.PENDING.value)
+            .where((e) =>
+                e.eventType.toLowerCase() ==
+                AttendanceEventType.PENDING.value.toLowerCase())
             .length;
         final holiday = events
-            .where((e) => e.eventType == AttendanceEventType.HOLIDAY.value)
+            .where((e) =>
+                e.eventType.toLowerCase() ==
+                AttendanceEventType.HOLIDAY.value.toLowerCase())
             .length;
 
         final leaveDays = events
             .where(
               (e) =>
-                  e.eventType == AttendanceEventType.LEAVE.value &&
+                  e.eventType.toLowerCase() ==
+                      AttendanceEventType.LEAVE.value.toLowerCase() &&
                   e.day <= dayNow,
             )
             .length;
         final businessDays = events
             .where(
               (e) =>
-                  e.eventType == AttendanceEventType.BUSSINES.value &&
+                  e.eventType.toLowerCase() ==
+                      AttendanceEventType.BUSSINES.value.toLowerCase() &&
                   e.day <= dayNow,
             )
             .length;
@@ -107,7 +123,6 @@ class DashboardController extends GetxController {
       }
     }
 
-    
     eventCounts.value = counts;
   }
 }

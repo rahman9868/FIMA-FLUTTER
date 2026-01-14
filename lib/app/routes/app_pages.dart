@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:myapp/app/modules/dashboard/bindings/dashboard_binding.dart';
-import 'package:myapp/app/modules/dashboard/views/dashboard_view.dart';
 import 'package:myapp/app/modules/login/bindings/login_binding.dart';
 import 'package:myapp/app/modules/login/views/login_view.dart';
 import 'package:myapp/app/modules/main/bindings/main_binding.dart';
