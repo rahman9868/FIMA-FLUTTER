@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:myapp/app/data/database/app_database.dart';
+import 'package:myapp/app/data/local/app_database.dart';
 import 'package:myapp/app/data/providers/cache_manager.dart';
 import 'package:myapp/app/data/repositories/dashboard_repository.dart';
 import 'package:myapp/app/modules/dashboard/controllers/dashboard_controller.dart';

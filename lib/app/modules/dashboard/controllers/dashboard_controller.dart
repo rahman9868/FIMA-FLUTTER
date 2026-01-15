@@ -20,6 +20,21 @@ class DashboardController extends GetxController {
     getAttendanceSummary();
   }
 
+  Future<void> refreshSummary() async {
+    getAttendanceSummary();
+  }
+
+  Map<String, int> get eventCounts {
+    final counts = <String, int>{};
+    final events = attendanceSummary.value?.data?.first.event;
+    if (events != null) {
+      for (final event in events) {
+        counts[event.eventType] = (counts[event.eventType] ?? 0) + 1;
+      }
+    }
+    return counts;
+  }
+
   void getAttendanceSummary() async {
     isLoading.value = true;
     final (summary, lastUpdateData) = await repository.getAttendanceSummary();
