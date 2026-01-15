@@ -19,7 +19,7 @@ class MainBinding extends Bindings {
     );
 
     Get.lazyPut<MyReportRepository>(
-      () => MyReportRepository(Get.find<AppDatabase>()),
+      () => MyReportRepository(),
     );
 
     Get.lazyPut<DashboardController>(
@@ -32,6 +32,7 @@ class MainBinding extends Bindings {
     Get.lazyPut<MyReportController>(
       () => MyReportController(
         repository: Get.find(),
+        cacheManager: Get.find(),
       ),
     );
 
