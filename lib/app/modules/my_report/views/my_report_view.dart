@@ -45,70 +45,65 @@ class MyReportView extends GetView<MyReportController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Report'),
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (controller.errorMessage.value.isNotEmpty) {
-          return Center(child: Text(controller.errorMessage.value));
-        } else {
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                TableCalendar<WorkCalendarEventDto>(
-                  firstDay: controller.firstDay,
-                  lastDay: controller.lastDay,
-                  focusedDay: controller.focusedDay.value,
-                  selectedDayPredicate: (day) =>
-                      isSameDay(controller.selectedDay.value, day),
-                  calendarFormat: CalendarFormat.month,
-                  eventLoader: controller.getEventsForDay,
-                  onDaySelected: controller.onDaySelected,
-                  onPageChanged: controller.onPageChanged,
-                  calendarStyle: CalendarStyle(
-                    todayDecoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.5),
-                      shape: BoxShape.circle,
-                    ),
-                    selectedDecoration: const BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (controller.errorMessage.value.isNotEmpty) {
+        return Center(child: Text(controller.errorMessage.value));
+      } else {
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              TableCalendar<WorkCalendarEventDto>(
+                firstDay: controller.firstDay,
+                lastDay: controller.lastDay,
+                focusedDay: controller.focusedDay.value,
+                selectedDayPredicate: (day) =>
+                    isSameDay(controller.selectedDay.value, day),
+                calendarFormat: CalendarFormat.month,
+                eventLoader: controller.getEventsForDay,
+                onDaySelected: controller.onDaySelected,
+                onPageChanged: controller.onPageChanged,
+                calendarStyle: CalendarStyle(
+                  todayDecoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.5),
+                    shape: BoxShape.circle,
                   ),
-                  headerStyle: const HeaderStyle(
-                    titleCentered: true,
-                    formatButtonVisible: false,
-                  ),
-                  calendarBuilders: CalendarBuilders(
-                    markerBuilder: (context, day, events) {
-                      if (events.isEmpty) return null;
-
-                      // Display a row of small flag icons as event markers.
-                      return Positioned(
-                        bottom: 4,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: events.map((event) {
-                            final eventType = _getEventType(event.status);
-                            final icon = _getIconForEventType(eventType);
-                            return Icon(icon.icon, color: icon.color, size: 14);
-                          }).toList(),
-                        ),
-                      );
-                    },
+                  selectedDecoration: const BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
                   ),
                 ),
-                const SizedBox(height: 20),
-                _buildEventList(),
-              ],
-            ),
-          );
-        }
-      }),
-    );
+                headerStyle: const HeaderStyle(
+                  titleCentered: true,
+                  formatButtonVisible: false,
+                ),
+                calendarBuilders: CalendarBuilders(
+                  markerBuilder: (context, day, events) {
+                    if (events.isEmpty) return null;
+
+                    // Display a row of small flag icons as event markers.
+                    return Positioned(
+                      bottom: 4,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: events.map((event) {
+                          final eventType = _getEventType(event.status);
+                          final icon = _getIconForEventType(eventType);
+                          return Icon(icon.icon, color: icon.color, size: 14);
+                        }).toList(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildEventList(),
+            ],
+          ),
+        );
+      }
+    });
   }
 
   Widget _buildEventList() {
