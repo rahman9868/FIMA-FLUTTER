@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:myapp/app/data/database/app_database.dart';
 import 'package:myapp/app/data/providers/cache_manager.dart';
 import 'package:myapp/app/data/repositories/dashboard_repository.dart';
 import 'package:myapp/app/modules/dashboard/controllers/dashboard_controller.dart';
@@ -11,7 +12,9 @@ class MainBinding extends Bindings {
     // when a route that uses it is closed. This makes it a singleton.
     Get.lazyPut<CacheManager>(() => CacheManager(), fenix: true);
     
-    Get.lazyPut<DashboardRepository>(() => DashboardRepository());
+    Get.lazyPut<DashboardRepository>(
+      () => DashboardRepository(Get.find<AppDatabase>()),
+    );
 
     Get.lazyPut<DashboardController>(
       () => DashboardController(
