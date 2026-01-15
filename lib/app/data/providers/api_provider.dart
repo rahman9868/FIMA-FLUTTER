@@ -1,6 +1,7 @@
 import '../models/auth_tokens_model.dart';
 import '../models/data_attendance_summary_dto.dart';
 import '../models/employee_dto.dart';
+import '../models/work_calendar_dto.dart';
 import 'api_client.dart';
 import 'cache_manager.dart';
 
@@ -52,5 +53,14 @@ class ApiProvider {
     );
     final summary = DataAttendanceSummaryDto.fromJson(response);
     return summary;
+  }
+
+  Future<WorkCalendarDto> getWorkCalendar(String employeeId, int year, int month) async {
+    final tokens = await _cacheManager.getAuthTokens();
+    final response = await _apiClient.get(
+      "att/workCalendar/$employeeId/$year/$month",
+      headers: {'Authorization': 'Bearer ${tokens?.accessToken}'},
+    );
+    return WorkCalendarDto.fromJson(response);
   }
 }

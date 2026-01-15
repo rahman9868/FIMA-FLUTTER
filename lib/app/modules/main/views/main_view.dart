@@ -40,6 +40,14 @@ class MainView extends GetView<MainController> {
                 },
               ),
               ListTile(
+                leading: const Icon(Icons.insert_drive_file),
+                title: const Text('My Report'),
+                onTap: () {
+                  controller.changePage(2);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.settings),
                 title: const Text('Settings'),
                 onTap: () {
