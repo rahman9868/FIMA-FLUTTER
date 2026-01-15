@@ -2,8 +2,10 @@ import 'package:get/get.dart';
 import 'package:myapp/app/data/local/app_database.dart';
 import 'package:myapp/app/data/providers/cache_manager.dart';
 import 'package:myapp/app/data/repositories/dashboard_repository.dart';
+import 'package:myapp/app/data/repositories/my_report_repository.dart';
 import 'package:myapp/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:myapp/app/modules/main/controllers/main_controller.dart';
+import 'package:myapp/app/modules/my_report/controllers/my_report_controller.dart';
 
 class MainBinding extends Bindings {
   @override
@@ -11,9 +13,13 @@ class MainBinding extends Bindings {
     // Using fenix: true to ensure the CacheManager is not disposed of
     // when a route that uses it is closed. This makes it a singleton.
     Get.lazyPut<CacheManager>(() => CacheManager(), fenix: true);
-    
+
     Get.lazyPut<DashboardRepository>(
       () => DashboardRepository(Get.find<AppDatabase>()),
+    );
+
+    Get.lazyPut<MyReportRepository>(
+      () => MyReportRepository(Get.find<AppDatabase>()),
     );
 
     Get.lazyPut<DashboardController>(
@@ -22,7 +28,13 @@ class MainBinding extends Bindings {
         cacheManager: Get.find(),
       ),
     );
-    
+
+    Get.lazyPut<MyReportController>(
+      () => MyReportController(
+        repository: Get.find(),
+      ),
+    );
+
     Get.lazyPut<MainController>(
       () => MainController(
         cacheManager: Get.find(),

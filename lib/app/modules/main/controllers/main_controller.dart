@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/app/data/providers/cache_manager.dart';
 import 'package:myapp/app/modules/dashboard/views/dashboard_view.dart';
-import 'package:flutter/material.dart';
+import 'package:myapp/app/modules/my_report/views/my_report_view.dart';
 import 'package:myapp/app/routes/app_pages.dart';
 
 class MainController extends GetxController {
@@ -13,12 +14,13 @@ class MainController extends GetxController {
 
   final List<Widget> pages = [
     const DashboardView(),
-    // Placeholder for settings page
-    const Center(child: Text("Settings Page")), 
+    const MyReportView(),
+    const Center(child: Text("Settings Page")),
   ];
 
   final List<String> pageTitles = [
     'Dashboard',
+    'My Report',
     'Settings',
   ];
 
@@ -26,6 +28,7 @@ class MainController extends GetxController {
   String get currentTitle => pageTitles[selectedIndex.value];
 
   bool get isDashboard => selectedIndex.value == 0;
+  bool get isMyReport => selectedIndex.value == 1;
 
   void changePage(int index) {
     selectedIndex.value = index;
