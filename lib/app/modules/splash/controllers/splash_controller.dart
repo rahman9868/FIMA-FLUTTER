@@ -18,8 +18,8 @@ class SplashController extends GetxController {
     final user = await _cacheManager.getUserProfile();
 
     if (user != null) {
-      // If user is found, go to the dashboard.
-      Get.offAllNamed(Routes.DASHBOARD);
+      // If user is found, go to the main page.
+      Get.offAllNamed(Routes.MAIN);
     } else {
       // Otherwise, go to the login page.
       Get.offAllNamed(Routes.LOGIN);
