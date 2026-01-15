@@ -52,6 +52,8 @@ class CacheManager {
 
   Future<void> clearAll() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    await prefs.remove(_keyAuthTokens);
+    await prefs.remove(_keyUserProfile);
+    await prefs.remove(_keyLastUpdate);
   }
 }

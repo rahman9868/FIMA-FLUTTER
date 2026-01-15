@@ -55,6 +55,14 @@ class MainView extends GetView<MainController> {
                   Navigator.pop(context);
                 },
               ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.exit_to_app),
+                title: const Text('Logout'),
+                onTap: () {
+                  controller.logout();
+                },
+              ),
             ],
           ),
         ),

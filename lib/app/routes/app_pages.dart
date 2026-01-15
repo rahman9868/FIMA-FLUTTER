@@ -30,7 +30,7 @@ class AppPages {
       binding: LoginBinding(),
     ),
     GetPage(
-      name: _Paths.DASHBOARD,
+      name: _Paths.MAIN,
       page: () => MainView(),
       binding: MainBinding(),
     ),
