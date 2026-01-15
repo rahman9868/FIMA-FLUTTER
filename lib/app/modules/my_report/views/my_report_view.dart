@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:myapp/app/data/models/attendance_event_type.dart';
-import 'package:myapp/app/modules/my_report/controllers/my_report_controller.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:myapp/app/modules/my_report/controllers/my_report_controller.dart';
 
 class MyReportView extends GetView<MyReportController> {
   const MyReportView({super.key});
@@ -18,94 +18,73 @@ class MyReportView extends GetView<MyReportController> {
           return const Center(child: CircularProgressIndicator());
         } else if (controller.errorMessage.value.isNotEmpty) {
           return Center(child: Text(controller.errorMessage.value));
-        } else if (controller.workCalendar.value == null) {
-          return const Center(child: Text('No data found'));
         } else {
-          return Column(
-            children: [
-              TableCalendar(
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(2030, 12, 31),
-                focusedDay: controller.focusedDay.value,
-                selectedDayPredicate: (day) {
-                  return isSameDay(controller.selectedDay.value, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  controller.onDaySelected(selectedDay, focusedDay);
-                },
-                eventLoader: (day) {
-                  return controller.getEventsForDay(day);
-                },
-                calendarBuilders: CalendarBuilders(
-                  markerBuilder: (context, date, events) {
-                    if (events.isNotEmpty) {
-                      return Positioned(
-                        right: 1,
-                        bottom: 1,
-                        child: _buildEventsMarker(events),
-                      );
-                    }
-                    return null;
-                  },
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                TableCalendar(
+                  firstDay: controller.firstDay,
+                  lastDay: controller.lastDay,
+                  focusedDay: controller.focusedDay.value,
+                  selectedDayPredicate: (day) => isSameDay(controller.selectedDay.value, day),
+                  calendarFormat: CalendarFormat.month,
+                  eventLoader: controller.getEventsForDay,
+                  onDaySelected: controller.onDaySelected,
+                  onPageChanged: controller.onPageChanged,
+                  calendarStyle: CalendarStyle(
+                    todayDecoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    selectedDecoration: const BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  headerStyle: const HeaderStyle(
+                    titleCentered: true,
+                    formatButtonVisible: false,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8.0),
-              Expanded(
-                child: _buildEventList(),
-              ),
-            ],
+                const SizedBox(height: 20),
+                _buildEventList(),
+              ],
+            ),
           );
         }
       }),
     );
   }
 
-  Widget _buildEventsMarker(List<dynamic> events) {
-    return Row(
-      children: events.map((event) => _getIconForStatus(event.status)).toList(),
-    );
-  }
-
   Widget _buildEventList() {
     return Obx(() {
-      final selectedEvents = controller.selectedEvents;
-      if (selectedEvents.isEmpty) {
-        return const Center(child: Text("No events for this day"));
+      if (controller.selectedEvents.isEmpty) {
+        return const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text('No events for this day'),
+        );
       }
+
       return ListView.builder(
-        itemCount: selectedEvents.length,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: controller.selectedEvents.length,
         itemBuilder: (context, index) {
-          final event = selectedEvents[index];
-          return ListTile(
-            leading: _getIconForStatus(event.status),
-            title: Text(event.status),
-            subtitle: Text(event.description ?? ''),
+          final event = controller.selectedEvents[index];
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ListTile(
+              title: Text(event.shiftName),
+              subtitle: Text(
+                'Clock In: ${event.clockIn != null ? DateFormat.jm().format(event.clockIn!) : 'N/A'}
+'
+                'Clock Out: ${event.clockOut != null ? DateFormat.jm().format(event.clockOut!) : 'N/A'}',
+              ),
+              trailing: Text(event.status),
+            ),
           );
         },
       );
     });
-  }
-
-  Icon _getIconForStatus(String status) {
-    switch (status) {
-      case 'LATE':
-        return const Icon(Icons.flag, color: Colors.yellow);
-      case 'ON_TIME':
-        return const Icon(Icons.flag, color: Colors.green);
-      case 'ABSENT':
-        return const Icon(Icons.flag, color: Colors.red);
-      case 'PENDING':
-        return const Icon(Icons.flag, color: Colors.orange);
-      case 'WORKING':
-        return const Icon(Icons.bookmark_border, color: Colors.grey);
-      case 'BUSSINES':
-        return const Icon(Icons.flag, color: Colors.blue);
-      case 'LEAVE':
-        return const Icon(Icons.flag, color: Colors.purple);
-      case 'HOLIDAY':
-        return const Icon(Icons.flag, color: Colors.pink);
-      default:
-        return const Icon(Icons.flag, color: Colors.grey);
-    }
   }
 }

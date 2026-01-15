@@ -16,46 +16,56 @@ class MyReportController extends GetxController {
 
   final Rx<DateTime> focusedDay = DateTime.now().obs;
   final Rx<DateTime?> selectedDay = DateTime.now().obs;
+  late final DateTime firstDay;
+  late final DateTime lastDay;
 
   final RxList<WorkCalendarEventDto> selectedEvents = <WorkCalendarEventDto>[].obs;
 
   @override
   void onInit() {
     super.onInit();
+    final now = DateTime.now();
+    firstDay = DateTime.utc(now.year, now.month - 1, 1);
+    lastDay = DateTime.utc(now.year, now.month + 2, 0);
     fetchWorkCalendar();
   }
 
   Future<void> fetchWorkCalendar() async {
     try {
-      isLoading(true);
-      final employee = await cacheManager.getUserProfile();
-      if (employee != null) {
-        final now = DateTime.now();
-        final result = await repository.getWorkCalendar(employee.id.toString(), now.year, now.month);
-        workCalendar(result);
-        selectedEvents.value = getEventsForDay(selectedDay.value ?? now);
+      isLoading.value = true;
+      final employeeId = await cacheManager.getEmployeeId();
+      if (employeeId != null) {
+        final result = await repository.getWorkCalendar(
+          employeeId,
+          focusedDay.value.year,
+          focusedDay.value.month,
+        );
+        workCalendar.value = result;
+        onDaySelected(selectedDay.value, focusedDay.value);
       } else {
-        errorMessage('Employee not found');
+        errorMessage.value = 'Employee ID not found.';
       }
     } catch (e) {
-      errorMessage(e.toString());
+      errorMessage.value = 'Failed to load work calendar: $e';
     } finally {
-      isLoading(false);
+      isLoading.value = false;
     }
   }
 
   List<WorkCalendarEventDto> getEventsForDay(DateTime day) {
-    if (workCalendar.value == null) {
-      return [];
-    }
-    return workCalendar.value!.data.where((event) => isSameDay(event.date, day)).toList();
+    final events = workCalendar.value?.events ?? [];
+    return events.where((event) => isSameDay(event.date, day)).toList();
   }
 
-  void onDaySelected(DateTime selected, DateTime focused) {
-    if (!isSameDay(selectedDay.value, selected)) {
-      selectedDay.value = selected;
+  void onDaySelected(DateTime? day, DateTime focused) {
+    if (day != null && !isSameDay(selectedDay.value, day)) {
+      selectedDay.value = day;
       focusedDay.value = focused;
-      selectedEvents.value = getEventsForDay(selected);
+      selectedEvents.value = getEventsForDay(day);
     }
+  }
+
+  void onPageChanged(DateTime focused) {
+    focusedDay.value = focused;
   }
 }
