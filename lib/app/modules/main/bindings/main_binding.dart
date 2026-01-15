@@ -11,7 +11,6 @@ class MainBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<CacheManager>(() => CacheManager(), fenix: true);
     Get.lazyPut<ApiProvider>(() => ApiProvider(), fenix: true);
-    Get.lazyPut<AppDatabase>(() => AppDatabase(), fenix: true);
 
     Get.lazyPut<DashboardRepository>(
       () => DashboardRepository(Get.find<AppDatabase>()),

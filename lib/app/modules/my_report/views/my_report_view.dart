@@ -74,13 +74,8 @@ class MyReportView extends GetView<MyReportController> {
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ListTile(
-              title: Text(event.shiftName),
-              subtitle: Text(
-                'Clock In: ${event.clockIn != null ? DateFormat.jm().format(event.clockIn!) : 'N/A'}
-'
-                'Clock Out: ${event.clockOut != null ? DateFormat.jm().format(event.clockOut!) : 'N/A'}',
-              ),
-              trailing: Text(event.status),
+              title: Text(event.description ?? 'No description'),
+              trailing: Text(event.status ?? 'N/A'),
             ),
           );
         },

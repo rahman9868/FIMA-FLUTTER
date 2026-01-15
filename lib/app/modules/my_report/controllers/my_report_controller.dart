@@ -33,10 +33,10 @@ class MyReportController extends GetxController {
   Future<void> fetchWorkCalendar() async {
     try {
       isLoading.value = true;
-      final employeeId = await cacheManager.getEmployeeId();
-      if (employeeId != null) {
+      final employee = await cacheManager.getUserProfile();
+      if (employee != null) {
         final result = await repository.getWorkCalendar(
-          employeeId,
+          employee.id.toString(),
           focusedDay.value.year,
           focusedDay.value.month,
         );
@@ -53,7 +53,7 @@ class MyReportController extends GetxController {
   }
 
   List<WorkCalendarEventDto> getEventsForDay(DateTime day) {
-    final events = workCalendar.value?.events ?? [];
+    final events = workCalendar.value?.data ?? [];
     return events.where((event) => isSameDay(event.date, day)).toList();
   }
 
