@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:myapp/app/data/local/app_database.dart';
+import 'package:myapp/app/data/providers/api_provider.dart';
 import 'package:myapp/app/data/providers/cache_manager.dart';
 import 'package:myapp/app/data/repositories/dashboard_repository.dart';
 import 'package:myapp/app/data/repositories/my_report_repository.dart';
@@ -13,6 +14,7 @@ class MainBinding extends Bindings {
     // Using fenix: true to ensure the CacheManager is not disposed of
     // when a route that uses it is closed. This makes it a singleton.
     Get.lazyPut<CacheManager>(() => CacheManager(), fenix: true);
+    Get.lazyPut<ApiProvider>(() => ApiProvider(), fenix: true);
 
     Get.lazyPut<DashboardRepository>(
       () => DashboardRepository(Get.find<AppDatabase>()),
